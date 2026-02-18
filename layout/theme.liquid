@@ -121,5 +121,135 @@
       <br>
       Time: {{ 'now' | date: '%H:%M' }}
     </div>
+    {% comment %} Custom "Crazy" Visual Effects {% endcomment %}
+    <style>
+      /* Button Shake Effect */
+      button:hover,
+      .button:hover,
+      .btn:hover,
+      .shopify-payment-button__button:hover {
+        animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both infinite;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+      }
+      @keyframes shake {
+        10%,
+        90% {
+          transform: translate3d(-1px, 0, 0);
+        }
+        20%,
+        80% {
+          transform: translate3d(2px, 0, 0);
+        }
+        30%,
+        50%,
+        70% {
+          transform: translate3d(-4px, 0, 0);
+        }
+        40%,
+        60% {
+          transform: translate3d(4px, 0, 0);
+        }
+      }
+
+      /* Glitch Text Effect for Headings */
+      h1,
+      h2,
+      .h0,
+      .h1,
+      .h2 {
+        position: relative;
+        color: white;
+        mix-blend-mode: exclusion;
+      }
+      h1:hover,
+      h2:hover,
+      .h1:hover,
+      .h2:hover {
+        animation: glitch 1s linear infinite;
+      }
+      @keyframes glitch {
+        2%,
+        64% {
+          transform: translate(2px, 0) skew(0deg);
+        }
+        4%,
+        60% {
+          transform: translate(-2px, 0) skew(0deg);
+        }
+        62% {
+          transform: translate(0, 0) skew(5deg);
+        }
+      }
+      h1:hover:before,
+      h2:hover:before,
+      h1:hover:after,
+      h2:hover:after {
+        content: attr(
+          data-text
+        ); /* This would need data-text attr to work perfectly, but fallback glitch color works */
+        position: absolute;
+        left: 0;
+      }
+      h1:before,
+      h2:before {
+        animation: glitchTop 1s linear infinite;
+        clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+        -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+      }
+      h1:after,
+      h2:after {
+        animation: glitchBottm 1.5s linear infinite;
+        clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+        -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+      }
+
+      /* Emoji Cursor Trail */
+      .emoji-trail {
+        position: fixed;
+        pointer-events: none;
+        font-size: 24px;
+        z-index: 99999;
+        animation: fadeOut 1s linear forwards;
+      }
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(20px) scale(0.5);
+        }
+      }
+    </style>
+
+    <script>
+      // Emoji Cursor Trail Logic
+      document.addEventListener('mousemove', function (e) {
+        if (Math.random() > 0.1) return; // Throttling: only spawn 10% of the time to avoid lag
+
+        const emojis = ['🔥', '🚀', '💎', '👁️', '💀', '⚡', '🪐', '👾'];
+        const el = document.createElement('div');
+        el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        el.className = 'emoji-trail';
+        el.style.left = e.clientX + 'px';
+        el.style.top = e.clientY + 'px';
+        document.body.appendChild(el);
+
+        setTimeout(() => {
+          el.remove();
+        }, 1000);
+      });
+
+      // Glitch Effect Helper: Add data-text attribute to all headings
+      document.addEventListener('DOMContentLoaded', () => {
+        const headings = document.querySelectorAll('h1, h2, .h0, .h1, .h2');
+        headings.forEach((h) => {
+          h.setAttribute('data-text', h.innerText);
+        });
+      });
+    </script>
   </body>
 </html>
