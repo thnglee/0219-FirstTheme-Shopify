@@ -1,0 +1,122 @@
+{%- liquid
+  # Calculate Estimated Delivery Date (EDD)
+  # Current time in seconds + 4 days (4 * 24 * 60 * 60 = 345600 seconds)
+  assign seconds = 4 | times: 24 | times: 60 | times: 60
+  assign edd_timestamp = 'now' | date: '%s' | plus: seconds
+  assign edd_date = edd_timestamp | date: '%A, %d %B'
+-%}
+
+<div class="custom-atc-wrapper">
+  {% comment %} EDD Message {% endcomment %}
+  <div class="edd-message">
+    <span class="edd-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="feather feather-truck"
+        width="20"
+        height="20"
+      >
+        <rect x="1" y="3" width="15" height="13"></rect>
+        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+      </svg>
+    </span>
+    <span class="edd-text">
+      Delivered on <span class="edd-date-badge">{{ edd_date }}</span> with Express Shipping
+    </span>
+  </div>
+
+  {% comment %} Add to Cart Button {% endcomment %}
+  <add-to-cart-component
+    ref="addToCartButtonContainer"
+    data-product-variant-media="{{ product.selected_or_first_available_variant.featured_media.preview_image | image_url: width: 100 }}"
+    class="custom-atc-component"
+  >
+    <button
+      type="submit"
+      name="add"
+      class="custom-atc-button"
+      {% unless product.selected_or_first_available_variant.available %}
+        disabled
+      {% endunless %}
+    >
+      <span>
+        {% if product.selected_or_first_available_variant.available %}
+          ADD TO CART
+        {% else %}
+          SOLD OUT
+        {% endif %}
+      </span>
+    </button>
+  </add-to-cart-component>
+</div>
+
+<style>
+  .custom-atc-wrapper {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: var(--font-body-family);
+  }
+
+  /* EDD Styling */
+  .edd-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #111;
+  }
+
+  .edd-icon svg {
+    display: block;
+  }
+
+  .edd-date-badge {
+    background-color: #008761; /* Green color from image */
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* Button Styling */
+  .custom-atc-button {
+    width: 100%;
+    background-color: #000; /* Black background */
+    color: #fff;
+    border: none;
+    padding: 16px 24px;
+    font-size: 16px;
+    font-weight: 700; /* Bold */
+    text-transform: uppercase; /* Uppercase */
+    cursor: pointer;
+    border-radius: 8px; /* Rounded corners */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .custom-atc-button:hover:not(:disabled) {
+    background-color: #333;
+    transform: translateY(-1px);
+  }
+
+  .custom-atc-button:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .custom-atc-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: #666;
+  }
+</style>
