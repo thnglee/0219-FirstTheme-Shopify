@@ -3,7 +3,7 @@
   # Current time in seconds + 4 days (4 * 24 * 60 * 60 = 345600 seconds)
   assign seconds = 4 | times: 24 | times: 60 | times: 60
   assign edd_timestamp = 'now' | date: '%s' | plus: seconds
-  assign edd_date = edd_timestamp | date: '%A, %d %B'
+  assign edd_date = edd_timestamp | date: '%a, %d %b'
 -%}
 
 <div class="custom-atc-wrapper">
@@ -69,10 +69,27 @@
   .edd-message {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    font-size: 15px;
+    gap: 8px; /* Reduced gap slightly */
+    margin-bottom: 12px;
+    font-size: 14px; /* Slightly smaller base font */
     color: #111;
+    flex-wrap: wrap; /* Allow wrap on very small screens if necessary, but try to fit */
+  }
+
+  @media screen and (max-width: 480px) {
+    .edd-message {
+      font-size: 11px; /* Significantly smaller for mobile */
+      gap: 5px;
+      white-space: nowrap; /* Force single line */
+      flex-wrap: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .edd-icon svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .edd-icon svg {
@@ -82,7 +99,7 @@
   .edd-date-badge {
     background-color: #008761; /* Green color from image */
     color: white;
-    padding: 4px 8px;
+    padding: 2px 6px; /* Tighter padding */
     border-radius: 4px;
     font-weight: 600;
   }
